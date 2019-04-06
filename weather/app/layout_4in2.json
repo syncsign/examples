@@ -1,0 +1,50 @@
+{
+    "background": {
+        "bgColor": "WHITE",
+        "fgColor": "BLACK",
+        "strokeSize": 2,
+        "enableButtonZone": false,
+        "block": {
+            "x_percent": 10,
+            "y_percent": 30,
+            "w_percent": 80,
+            "h_percent": 40,
+        }
+    },
+    "items": [
+        { "type": "TEXT",
+          "data": {
+            "caption": "{CAPTION_CONDITION}",
+            "font": "YKSZ_BOLD_44",
+            "color": "BLACK",
+            "block": {
+                "x": 48,
+                "y": 90,
+                "w": 304,
+                "h": 56
+            },
+            "offset": {
+                "x": 0,
+                "y": 0
+            },
+          }
+        },
+        { "type": "TEXT",
+          "data": {
+            "caption": "{CAPTION_TEMPERATURE}",
+            "font": "DIN_CON_32",
+            "color": "BLACK",
+            "block": {
+                "x": 48,
+                "y": 140,
+                "w": 304,
+                "h": 56
+            },
+            "offset": {
+                "x": 0,
+                "y": 0
+            },
+          }
+        }
+    ]
+}
