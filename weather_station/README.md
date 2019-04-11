@@ -1,12 +1,12 @@
 # Weather Station Example
 
-This is a simple example of weather station. You may create a personalised fridge magnet with this app.
+This is a simple example of weather station. You may create a personalised fridge magnet with this App.
 
-Let's say we want to update the display with latest weather forecast every hour, this app will do these to archive this goal:
+Let's say we want to update the display with latest weather forecast every hour, this App will do these to archive this goal:
 
 - Request for latest weather over HTTP GET every hour
 - Analysis the weather condition
-- Generate a layout template and send to wireless display
+- Generate a layout template and send to wireless display node
 
 ## SETUP
 
