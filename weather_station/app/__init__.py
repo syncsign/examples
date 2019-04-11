@@ -24,14 +24,16 @@ class App:
     def __init__(self, loop, pan):
         self.log = logging.getLogger("APP")
         self.log.setLevel(logging.DEBUG)
-        self.log.info('App Starting')
         self.pan = pan
+        self.loop = loop
         self.targetNodeId = None
         self.nodeOnlineEvent = asyn.Event()
+        self.loop.create_task(self.task()) # run a asyncio task
+        self.log.info('App Starting')
 
     async def task(self):
         """Main task of App Class
-        This coro task() will be brought up automatically by system.
+        This coro task() was brought up by __init__().
         """
         # waiting for at least one display node becomes online
         await self.nodeOnlineEvent
@@ -111,8 +113,9 @@ class App:
                 layout['items'][0]['data']['offset']['x'] = (fullWidth - width - 48 * 2) // 2
                 # Replace temperature & humidity data in layout
                 fahrenheit = int((temperatureKelvin * 9 / 5 - 459.67) * 10) / 10
-                # celsius = int((temperatureKelvin - 273.15) * 10) / 10
                 temp = str(fahrenheit) + "\'F  " + str(humidity) + "%"
+                # celsius = int((temperatureKelvin - 273.15) * 10) / 10
+                # temp = str(celsius) + "\'C    " + str(humidity) + "%"
                 width = self.font.getRenderedWidth(temp, self.font.FONT_DIN_CON_32) # calculate width, in order to align center
                 layout['items'][1]['data']['caption'] = temp
                 layout['items'][1]['data']['offset']['x'] = (fullWidth - width - 48 * 2) // 2
@@ -120,7 +123,7 @@ class App:
                 """Send to display"""
                 '''
                 # if you have more than one nodes, try lookup like this:
-                nodes = self.pan.getNodes()
+                nodes = self.pan.getNodeIDs()
                 if len(nodes):
                     self.targetNodeId = nodes[0]
                 '''

@@ -1,4 +1,4 @@
-# Weathers Example
+# Weather Station Example
 
 This is a simple example of weather station. You may create a personalised fridge magnet with this app.
 
