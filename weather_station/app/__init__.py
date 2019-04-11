@@ -3,6 +3,7 @@ import uasyncio as asyncio
 import arequests as requests
 import asyn
 import json
+from core.params import *
 
 # Change to your own settings
 OPENWEATHERMAP_APIKEY = 'REPLACE_THIS_WITH_YOUR_OWN_API_KEY'
@@ -21,13 +22,14 @@ class App:
     - Generate a layout template and send to wireless display
     """
 
-    def __init__(self, loop, pan):
+    def __init__(self, mgr, loop, pan):
         self.log = logging.getLogger("APP")
         self.log.setLevel(logging.DEBUG)
         self.pan = pan
         self.loop = loop
         self.targetNodeId = None
         self.nodeOnlineEvent = asyn.Event()
+        mgr.setPanCallback(self.onPanEvent);
         self.loop.create_task(self.task()) # run a asyncio task
         self.log.info('App Starting')
 
@@ -45,6 +47,10 @@ class App:
             self.log.debug('App Task Running')
             await self._fetchLastestWeather()
             await asyncio.sleep(REFRESH_INTERVAL) # sleep for a while
+
+    def onPanEvent(self, event, data):
+        if event == EVT_NODE_PRESENCE:
+            self.onNodePresence(data['nodeId'], data['isOnline'])
 
     def onNodePresence(self, nodeId, isOnline):
         """Event of presence/absence
