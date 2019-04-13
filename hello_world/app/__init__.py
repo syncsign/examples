@@ -36,24 +36,11 @@ class App:
         try:
             layout = '''
             {
-                "background": {
-                    "bgColor": "WHITE",
-                    "enableButtonZone": false,
-                    "rectangle": {
-                        "strokeSize": 2,
-                        "fgColor": "BLACK",
-                        "block": { "x_percent": 10, "y_percent": 30, "w_percent": 80, "h_percent": 40,
-                        }
-                    }
-                },
                 "items": [
                     { "type": "TEXT",
                       "data": {
                         "caption": "HELLO WORLD",
-                        "font": "YKSZ_BOLD_44",
-                        "color": "BLACK",
                         "block": { "x": 120, "y": 125, "w": 200, "h": 56 },
-                        "offset": { "x": 0, "y": 0 },
                       }
                     }
                 ]

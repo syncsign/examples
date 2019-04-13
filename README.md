@@ -2,7 +2,7 @@
 
 Example code for Vobot Sync Display.
 
-These examples can be deployed to Hub, and runs after reboot.
+Each of the example can be deployed to Hub, and runs after reboot.
 
 # List
 
