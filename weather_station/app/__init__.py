@@ -3,7 +3,7 @@ import uasyncio as asyncio
 import arequests as requests
 import asyn
 import json
-from core.params import *
+from core.constants import *
 
 # Change to your own settings
 OPENWEATHERMAP_APIKEY = 'REPLACE_THIS_WITH_YOUR_OWN_API_KEY'
