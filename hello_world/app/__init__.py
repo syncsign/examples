@@ -42,5 +42,5 @@ class App:
             '''
             return await self.pan.updateDisplay(self.targetNodeId, json.loads(layout))
         except Exception as e:
-            self.log.exception(e, 'unable to process')
+            print('unable to process')
         return False
