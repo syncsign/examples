@@ -29,7 +29,7 @@ class App:
         self.loop = loop
         self.targetNodeId = None
         self.nodeOnlineEvent = asyn.Event()
-        mgr.setPanCallback(self.onPanEvent);
+        mgr.setPanCallback(self.onPanEvent)
         self.loop.create_task(self.task()) # run a asyncio task
         self.log.info('App Starting')
 

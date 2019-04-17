@@ -9,7 +9,7 @@ class App:
         self.pan = pan
         loop.create_task(self.task()) # run a asyncio task
         self.targetNodeId = None
-        mgr.setPanCallback(self.onPanEvent);
+        mgr.setPanCallback(self.onPanEvent)
 
     async def task(self):
         # This coro task() was brought up by __init__()
