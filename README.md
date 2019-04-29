@@ -8,3 +8,5 @@ Each of the example can be deployed to Hub, and runs after reboot.
 
 - Hello World
 - Weather Station
+- Draw Full Screen
+- QR Code
