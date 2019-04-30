@@ -17,7 +17,7 @@
         { "type": "TEXT",
           "data": {
             "caption": "{CAPTION_CONDITION}",
-            "font": "YKSZ_BOLD_44",
+            "font": "YANONE_KAFFEESATZ_44_B",
             "color": "BLACK",
             "block": {
                 "x": 48,
@@ -34,7 +34,7 @@
         { "type": "TEXT",
           "data": {
             "caption": "{CAPTION_TEMPERATURE}",
-            "font": "DIN_CON_32",
+            "font": "DDIN_CONDENSED_32",
             "color": "BLACK",
             "block": {
                 "x": 48,
