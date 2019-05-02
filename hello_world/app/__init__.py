@@ -34,7 +34,7 @@ class App:
                     { "type": "TEXT",
                       "data": {
                         "caption": "HELLO WORLD",
-                        "block": { "x": 120, "y": 125, "w": 200, "h": 56 },
+                        "block": { "x": 120, "y": 110, "w": 200, "h": 56 }
                       }
                     }
                 ]
@@ -42,5 +42,5 @@ class App:
             '''
             return await self.pan.updateDisplay(self.targetNodeId, json.loads(layout))
         except Exception as e:
-            print('unable to process')
+            print('unable to process:', str(e))
         return False
