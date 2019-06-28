@@ -1,6 +1,6 @@
 # Hello World Example
 
-This is a minimum example of user application.
+This is an example of user application which may show something on the wireless display.
 
 ## Procedures Explain
 

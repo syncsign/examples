@@ -15,7 +15,7 @@ TEMPLATE = '''
 '''
 
 class App:
-    # User App of Hub SDK, send a 'Hello world' to wireless display
+    # User's App, send a 'Hello world' to wireless display
 
     def __init__(self, mgr, loop, pan):
         self.pan = pan
