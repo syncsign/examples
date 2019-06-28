@@ -1,10 +1,11 @@
 import uasyncio as asyncio
-import json
+import ujson as json
 import core.pan_vfs
 from core.constants import *
 
-BITMAP_NAME = "bitmap.bin"
-BITMAP_PATH = "/app/" + BITMAP_NAME
+BITMAP_NAME = "test.bmp"
+BITMAP_PATH = "app/" + BITMAP_NAME
+TARGET_NODE_ID = 0x124b001bbbf89e # REPLACE ME WITH YOUR DISPLAY NODE ID
 
 class App:
     # User App of Hub SDK, send a full screen image to wireless display
@@ -32,13 +33,16 @@ class App:
     def onPanEvent(self, event, data):
         # Event listener, handling NODE.PRESENCE and remember the nodeId
         if event == EVT_NODE_PRESENCE:
-            if data['isOnline']: # and data['nodeId'] == 0x124b000435f708:
+            if data['isOnline'] and data['nodeId'] == TARGET_NODE_ID:
                 self.targetNodeId = data['nodeId']
                 print('node:', self.targetNodeId, 'online.')
 
     async def saveBitmapDataToNode(self, target, filePath, fileName):
         with open(filePath,'rb') as f:
-            return await self.vfs.save(target, fileName, f.read())
+            import core.image_process as img
+            bitmapData, msg = img.loadBMP(f.read())
+            if (len(bitmapData)):
+                return await self.vfs.save(target, fileName, bytes(bitmapData))
         return False
 
     async def showFullScreenBitmap(self, target):
@@ -47,7 +51,7 @@ class App:
             layout = json.loads('''{
                 "background": {
                     "bitmap": { "name": "" }
-                },
+                }
             }''')
             layout['background']['bitmap']['name'] = BITMAP_NAME
             return await self.pan.updateDisplay(target, layout)
