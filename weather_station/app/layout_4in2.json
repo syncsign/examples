@@ -3,8 +3,9 @@
         "bgColor": "WHITE",
         "enableButtonZone": false,
         "rectangle": {
-            "strokeSize": 2,
-            "fgColor": "BLACK",
+            "strokeThickness": 2,
+            "strokeColor": "BLACK",
+            "fillColor": "WHITE",
             "block": {
                 "x_percent": 10,
                 "y_percent": 30,
@@ -16,36 +17,55 @@
     "items": [
         { "type": "TEXT",
           "data": {
-            "caption": "{CAPTION_CONDITION}",
+            "text": "{CONDITION}",
             "font": "YANONE_KAFFEESATZ_44_B",
             "color": "BLACK",
+            "text-align": "CENTER",
             "block": {
                 "x": 48,
-                "y": 90,
+                "y": 95,
                 "w": 304,
                 "h": 56
             },
             "offset": {
                 "x": 0,
                 "y": 0
-            },
+            }
           }
         },
         { "type": "TEXT",
           "data": {
-            "caption": "{CAPTION_TEMPERATURE}",
+            "text": "{TEMPERATURE}",
             "font": "DDIN_CONDENSED_32",
             "color": "BLACK",
+            "text-align": "CENTER",
             "block": {
                 "x": 48,
-                "y": 140,
+                "y": 152,
                 "w": 304,
-                "h": 56
+                "h": 48
             },
             "offset": {
                 "x": 0,
                 "y": 0
+            }
+          }
+        },
+        { "type": "TEXT",
+          "data": {
+            "text": "\uf07b",
+            "font": "ICON_WEATHER",
+            "color": "BLACK",
+            "block": {
+                "x": 168,
+                "y": 10,
+                "w": 80,
+                "h": 72
             },
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
           }
         }
     ]

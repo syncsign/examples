@@ -2,7 +2,7 @@ import logging
 import uasyncio as asyncio
 import arequests as requests
 import asyn
-import json
+import ujson as json
 from core.constants import *
 
 # Change to your own settings
@@ -12,7 +12,7 @@ COUNTRY_CODE = 'us'
 
 # Options
 REFRESH_INTERVAL = 60 * 60 # refresh every hour
-LAYOUT_FILE = "/app/layout_4in2.json"
+LAYOUT_FILE = "app/layout_4in2.json"
 
 class App:
     """App for periodic update of weather station
@@ -30,15 +30,15 @@ class App:
         self.targetNodeId = None
         self.nodeOnlineEvent = asyn.Event()
         mgr.setPanCallback(self.onPanEvent)
-        self.loop.create_task(self.task()) # run a asyncio task
+        self.loop.create_task(self.loopTask()) # run a asyncio task
         self.log.info('App Starting')
 
-    async def task(self):
+    async def loopTask(self):
         """Main task of App Class
         This coro task() was brought up by __init__().
         """
         # waiting for at least one display node becomes online
-        await self.nodeOnlineEvent
+        await self.nodeOnlineEvent # an example of how to use 'asyn' event
         self.targetNodeId = self.nodeOnlineEvent.value()
         self.nodeOnlineEvent.clear()
 
@@ -106,32 +106,23 @@ class App:
         try:
             with open(LAYOUT_FILE, 'r') as f:
                 layout = json.loads(f.read())
-
-                import core.device_display as disp
-                dp = disp.getSpec(disp.DISPLAY_4IN2_BW)
-                fullWidth = dp['resolution']['width']
-                from core.font_render import FontRender
-                self.font = FontRender()
-
                 # Replace weather condition data in layout
-                width = self.font.getRenderedWidth(mainCondition, self.font.FONT_YKSZ_BOLD_44) # calculate width, in order to align center
-                layout['items'][0]['data']['caption'] = mainCondition
-                layout['items'][0]['data']['offset']['x'] = (fullWidth - width - 48 * 2) // 2
+                layout['items'][0]['data']['text'] = mainCondition
                 # Replace temperature & humidity data in layout
                 fahrenheit = int((temperatureKelvin * 9 / 5 - 459.67) * 10) / 10
-                temp = str(fahrenheit) + "\'F  " + str(humidity) + "%"
+                temp = '{0:.1f}'.format(fahrenheit) + u"\u00b0F    " + str(int(humidity)) + "%"
                 # celsius = int((temperatureKelvin - 273.15) * 10) / 10
-                # temp = str(celsius) + "\'C    " + str(humidity) + "%"
-                width = self.font.getRenderedWidth(temp, self.font.FONT_DIN_CON_32) # calculate width, in order to align center
-                layout['items'][1]['data']['caption'] = temp
-                layout['items'][1]['data']['offset']['x'] = (fullWidth - width - 48 * 2) // 2
+                # temp = '{0:.1f}'.format(celsius) + u"\u00b0C    " + str(int(humidity)) + "%"
+                layout['items'][1]['data']['text'] = temp
+                # FIXME: use correct weather icon, see: https://erikflowers.github.io/weather-icons/
+                layout['items'][2]['data']['text'] = '\uf002'
 
                 """Send to display"""
                 '''
                 # if you have more than one nodes, try lookup like this:
-                nodes = self.pan.getNodeIDs()
+                nodes = self.pan.onlineNodes()
                 if len(nodes):
-                    self.targetNodeId = nodes[0]
+                    self.targetNodeId = next(iter(nodes))
                 '''
                 return await self.pan.updateDisplay(self.targetNodeId, layout)
         except Exception as e:
