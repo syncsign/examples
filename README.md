@@ -6,7 +6,7 @@ Each of the example can be deployed to Hub, and runs after reboot.
 
 # List
 
-- Get Start
+- Get Started
 - Hello World
 - Weather Station
 - Draw Full Screen
