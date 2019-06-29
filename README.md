@@ -11,3 +11,4 @@ Each of the example can be deployed to Hub, and runs after reboot.
 - Weather Station
 - Draw Full Screen
 - QR Code
+- ZigBee Sensors & Control
