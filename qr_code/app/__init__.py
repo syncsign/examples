@@ -39,7 +39,7 @@ class App:
                 "items": [
                     { "type": "TEXT",
                       "data": {
-                        "caption": "Scan Me!",
+                        "text": "Scan Me!",
                         "block": { "x": 144, "y": 200, "w": 144, "h": 56 }
                       }
                     },

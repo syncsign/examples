@@ -1,5 +1,5 @@
 import uasyncio as asyncio
-import json
+import ujson as json
 
 TEMPLATE = '''
 {
