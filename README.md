@@ -14,4 +14,5 @@ Refer to this [SDK document](https://dev.myvobot.com/sync-display/sdk/index.html
 - Draw Full Screen
 - Draw QR Code
 - Http Requests
+- MQTT Subscribe & Publish
 - ZigBee Sensors & Control
