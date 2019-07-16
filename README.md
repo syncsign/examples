@@ -16,3 +16,4 @@ Refer to this [SDK document](https://dev.myvobot.com/sync-display/sdk/index.html
 - Http Requests
 - MQTT Subscribe & Publish
 - ZigBee Sensors & Control
+- Simple Web Server
