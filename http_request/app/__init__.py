@@ -11,8 +11,6 @@ class App:
         self.log.setLevel(logging.DEBUG)
         self.log.info('APP init')
         self.loop = loop
-        self.base64Example()
-        self.urlEncodeExample()
         self.loop.create_task(self.requestTask())
 
     async def getRequest(self, url, headers = {}):
@@ -80,26 +78,35 @@ class App:
             await response.close()
             self.log.info("PATCH result: %s", resultStr)
 
-    def base64Example(self):
+    def base64Encode(self, _json = {}):
         import base64
-        token = { "client": "xxx" }
-        base64Str = base64.b64encode(json.dumps(token).encode()).decode()
+        base64Str = base64.b64encode(json.dumps(_json).encode()).decode()
         self.log.info("base64 result: %s", base64Str)
+        return base64Str
 
-    def urlEncodeExample(self):
+    def urlEncode(self, url, params = {}):
         import urllib.parse
-        url = "https://httpbin.org/"
-        params = { "id": 5, "type": "xxx" }
         url = url + urllib.parse.urlencode(params)
         self.log.info("url encode: %s", url)
+        return url
 
     async def requestTask(self):
         await asyncio.sleep(5)
         _header = { "KEY" : "VALUE" }
-        _data = { "HELLO" : "WORLD" }
+        _data = { "id": 5, "HELLO" : "WORLD" }
+
+        # methods example
         await self.getRequest( "https://httpbin.org/get", headers = _header )
         await self.postRequest( "https://httpbin.org/post", json = _data)
         await self.putRequest( "https://httpbin.org/put", json = _data)
         await self.deleteRequest( "https://httpbin.org/delete", json = _data)
         await self.patchRequest( "https://httpbin.org/patch", json = _data)
+
+        # base64 encoding example
+        await self.getRequest( "https://httpbin.org//base64/{val}".format(val = self.base64Encode(_data)) )
+
+        # redirect & url encoding example
+        _redirect_to = { "url": "https://httpbin.org/uuid" }
+        await self.getRequest( self.urlEncode("https://httpbin.org/redirect-to?", _redirect_to) )
+
         self.log.info('request completed')
