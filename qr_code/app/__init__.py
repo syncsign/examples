@@ -34,7 +34,7 @@ class App:
             layout = '''
             {
                 "background": {
-                    "bgColor": "WHITE",
+                    "bgColor": "WHITE"
                 },
                 "items": [
                     { "type": "TEXT",
