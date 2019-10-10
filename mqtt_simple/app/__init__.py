@@ -7,6 +7,8 @@ import uasyncio as asyncio
 from umqtt.simple import MQTTClient
 from micropython import const
 
+log = logging.getLogger("MQTT")
+
 class MqttClient:
     # User App of Hub SDK, subscribe and publish MQTT messages
 
@@ -18,9 +20,8 @@ class MqttClient:
     DEFAULT_KEEPALIVE    = const(60)
     KEEP_ALIVE_THRESHOLD = const(5)
 
-    def __init__(self, loop, log, callback = None):
+    def __init__(self, loop, callback = None):
         self.loop = loop
-        self.log = log
         self.subscribeCallback = callback
 
         self.sn = self.UNIQUE_ID
@@ -28,7 +29,7 @@ class MqttClient:
         self.topicSubOperation = "%s/operation" % (self.sn) # same as: MC30AEA4CC1A40/operation
         self.topicPubUpdate    = "%s/update"    % (self.sn) # same as: MC30AEA4CC1A40/update
         self.mqttLive = False
-        self.log.info('MQTT init')
+        log.info('MQTT init')
 
     def _clientInit(self):
         self.client = MQTTClient(client_id  = self.sn,
@@ -37,23 +38,23 @@ class MqttClient:
                                  keepalive  = DEFAULT_KEEPALIVE)
 
     def _clientConnect(self):
-        self.log.debug('MQTT connecting...')
+        log.debug('MQTT connecting...')
         try:
             self.client.connect()
-            self.log.info('MQTT live!')
+            log.info('MQTT live!')
             self.mqttLive = True
             return True
         except Exception as e:
-            self.log.exception(e, 'could not establish MQTT connection')
+            log.exception(e, 'could not establish MQTT connection')
             return False
 
     def _subscribeTopic(self):
         try:
             self.client.set_callback(self._msgReceivedCallback) # set a handler for incoming messages
             self.client.subscribe(topic = self.topicSubOperation, qos = 0)
-            self.log.info('subscribe [%s]', self.topicSubOperation)
+            log.info('subscribe [%s]', self.topicSubOperation)
         except Exception as e:
-            self.log.exception(e, 'subscribe fail')
+            log.exception(e, 'subscribe fail')
 
     def _resetPingTimer(self):
         self.pingCountdown = DEFAULT_KEEPALIVE
@@ -62,7 +63,7 @@ class MqttClient:
         ''' do a MQTT ping before keepalive period expires '''
         self.pingCountdown -= 1
         if self.pingCountdown < KEEP_ALIVE_THRESHOLD:
-            self.log.debug('mqtt ping...')
+            log.debug('mqtt ping...')
             self.client.ping()
             self._resetPingTimer()
 
@@ -84,10 +85,10 @@ class MqttClient:
     def publishMsg(self, msg):
         try:
             topic = self.topicPubUpdate
-            self.log.info("publish: topic[%s] msg[%s]", topic, msg)
+            log.info("publish: topic[%s] msg[%s]", topic, msg)
             self.client.publish(topic=topic, msg=msg, qos=0)
         except Exception as e:
-            self.log.exception(e, 'publish fail')
+            log.exception(e, 'publish fail')
 
     async def taskMqttWorker(self):
         reconnectAttemptBackoff = 1 # don't try too hard, use backoff
@@ -99,13 +100,13 @@ class MqttClient:
                 reconnectAttemptBackoff = 1
                 await asyncio.sleep(1)
             except Exception as e:
-                self.log.exception(e, 'MQTT check message problem')
+                log.exception(e, 'MQTT check message problem')
                 self.mqttLive = False
                 if not self._connectAttempt():
                     reconnectAttemptBackoff *= 2 # don't retry too fast, this will abuse the server
                     if reconnectAttemptBackoff > 64:
                         reconnectAttemptBackoff = 64
-                    self.log.debug('reconnect attempt backoff: %ds', reconnectAttemptBackoff)
+                    log.debug('reconnect attempt backoff: %ds', reconnectAttemptBackoff)
                     await asyncio.sleep(reconnectAttemptBackoff)
 
     def start(self):
@@ -114,8 +115,7 @@ class MqttClient:
 
 class App:
     def __init__(self, mgr, loop, pan):
-        self.log = logging.getLogger("MQTT")
-        self.mc = MqttClient(loop, self.log, self.onMsgReceived)
+        self.mc = MqttClient(loop, self.onMsgReceived)
         self.mc.start()
         loop.create_task(self.taskPublishTest())
 
@@ -132,4 +132,4 @@ class App:
     def onMsgReceived(self, topic, msg):
         s_topic = topic.decode()
         s_msg = msg.decode()
-        self.log.info("received: topic[%s] msg[%s]", s_topic, s_msg)
+        log.info("received: topic[%s] msg[%s]", s_topic, s_msg)

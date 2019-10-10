@@ -5,6 +5,9 @@ import asyn
 import ujson as json
 from core.constants import *
 
+log = logging.getLogger("APP")
+log.setLevel(logging.DEBUG)
+
 # Change to your own settings
 OPENWEATHERMAP_APIKEY = 'REPLACE_THIS_WITH_YOUR_OWN_API_KEY'
 CITY_NAME = 'Los Angeles'
@@ -23,15 +26,13 @@ class App:
     """
 
     def __init__(self, mgr, loop, pan):
-        self.log = logging.getLogger("APP")
-        self.log.setLevel(logging.DEBUG)
         self.pan = pan
         self.loop = loop
         self.targetNodeId = None
         self.nodeOnlineEvent = asyn.Event()
         mgr.setPanCallback(self.onPanEvent)
         self.loop.create_task(self.loopTask()) # run a asyncio task
-        self.log.info('App Starting')
+        log.info('App Starting')
 
     async def loopTask(self):
         """Main task of App Class
@@ -44,7 +45,7 @@ class App:
 
         # loop forever
         while True:
-            self.log.debug('App Task Running')
+            log.debug('App Task Running')
             await self._fetchLastestWeather()
             await asyncio.sleep(REFRESH_INTERVAL) # sleep for a while
 
@@ -59,7 +60,7 @@ class App:
             nodeId: (int) indicates which node is changing its status
             isOnline: (bool) =True, a presence; =False: absence
         """
-        self.log.info('node "%s" is %s', hex(nodeId), 'online.' if isOnline else 'offline!')
+        log.info('node "%s" is %s', hex(nodeId), 'online.' if isOnline else 'offline!')
         if isOnline:
             self.nodeOnlineEvent.set(nodeId)
 
@@ -67,23 +68,23 @@ class App:
         """Lookup current weather info through a REST API request"""
         url = 'http://api.openweathermap.org/data/2.5/weather?q={cityName},{countryCode}&appid={apiKey}'.format(
                 cityName = CITY_NAME, countryCode = COUNTRY_CODE, apiKey = OPENWEATHERMAP_APIKEY )
-        self.log.debug(url)
+        log.debug(url)
         response = None
         try:
             response = await requests.get(url)
             res = await response.json()
             if not 'cod' in res:
-                self.log.error(res)
+                log.error(res)
             else:
                 code = res['cod']
                 if code == 200:
                     await self._parseWeather(res)
                 else:
-                    self.log.error('invalid response: {}'.format(code))
+                    log.error('invalid response: {}'.format(code))
         except Exception as e:
-            self.log.exception(e, 'unable to get weather')
+            log.exception(e, 'unable to get weather')
             if response:
-                self.log.debug(str(response._cached))
+                log.debug(str(response._cached))
         finally:
             if response: # If the error is an OSError the socket has to be closed.
                 await response.close()
@@ -93,16 +94,16 @@ class App:
         try:
             weather = response['weather']
             main = response['main']
-            self.log.info('Weather: {} {}'.format(weather, main))
+            log.info('Weather: {} {}'.format(weather, main))
             await self._sendToDisplay(weather[0]['main'], main['temp'], main['humidity'])
         except Exception as e:
-            self.log.exception(e, 'unable to parse weather')
+            log.exception(e, 'unable to parse weather')
 
     async def _sendToDisplay(self, mainCondition, temperatureKelvin, humidity):
         """Create layout render template and send to display"""
         if not self.pan:
             return False
-        self.log.debug('send to display')
+        log.debug('send to display')
         try:
             with open(LAYOUT_FILE, 'r') as f:
                 layout = json.loads(f.read())
@@ -126,5 +127,5 @@ class App:
                 '''
                 return await self.pan.updateDisplay(self.targetNodeId, layout)
         except Exception as e:
-            self.log.exception(e, 'unable to process layout')
+            log.exception(e, 'unable to process layout')
         return False

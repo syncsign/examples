@@ -7,6 +7,9 @@ import arequests as requests
 import logging
 from micropython import const
 
+log = logging.getLogger("APP")
+log.setLevel(logging.DEBUG)
+
 # replace these lines with zigbee device you are going to control
 TARGET_LIGHT_NODE_ID             = const(0x00124B0014C40F0F)
 ZCL_CLUSTER_ID_GEN_LEVEL_CONTROL = const(0x0008)
@@ -17,9 +20,7 @@ DST_ENDPOINT                     = const(8)
 class App:
     # User App of Hub SDK, send a 'Hello world' to wireless display
     def __init__(self, mgr, loop, pan):
-        self.log = logging.getLogger("APP")
-        self.log.setLevel(logging.DEBUG)
-        self.log.info('APP init')
+        log.info('APP init')
         self.pan = pan
         mgr.setSetupPressedCallback(self.onSetupPressed)
         self.pan.setAppNodeJoinCallback(self.onNodeJoin)
@@ -27,30 +28,30 @@ class App:
         self.loop = loop
 
     def onSetupPressed(self):
-        self.log.info('setup button pressed')
+        log.info('setup button pressed')
         if self.pan:
             self.pan.permitDeviceJoin(60)
 
     def onNodeJoin(self, rawData, n):
-        self.log.info('node joined/rejoined')
-        self.log.debug("SrcAddr %s", hex(n.SrcAddr))
-        self.log.debug("NwkAddr %s", hex(n.NwkAddr))
-        self.log.debug("IEEEAddr %s", hex(n.IEEEAddr)) # nodeId
-        self.log.debug("Capabilities %s", hex(n.Capabilities))
+        log.info('node joined/rejoined')
+        log.debug("SrcAddr %s", hex(n.SrcAddr))
+        log.debug("NwkAddr %s", hex(n.NwkAddr))
+        log.debug("IEEEAddr %s", hex(n.IEEEAddr)) # nodeId
+        log.debug("Capabilities %s", hex(n.Capabilities))
 
     def onDataReceive(self, rawData, n):
-        self.log.info('data received')
-        self.log.debug("GroupId# %s", n.GroupId)
-        self.log.debug("ClusterId# %s", hex(n.ClusterId))
-        self.log.debug("SrcAddr# %s", hex(n.SrcAddr))
-        self.log.debug("SrcEndpoint# %d", n.SrcEndpoint)
-        self.log.debug("DstEndpoint# %d", n.DstEndpoint)
-        self.log.debug("WasBroadcast# %d", n.WasBroadcast)
-        self.log.debug("LinkQuality# %d", n.LinkQuality)
-        self.log.debug("SecurityUse# %d", n.SecurityUse)
-        self.log.debug("TimeStamp# %d", n.TimeStamp)
-        self.log.debug("TransSeqNum# %d", n.TransSeqNum)
-        self.log.debug("Len# %d", n.Len)
+        log.info('data received')
+        log.debug("GroupId# %s", n.GroupId)
+        log.debug("ClusterId# %s", hex(n.ClusterId))
+        log.debug("SrcAddr# %s", hex(n.SrcAddr))
+        log.debug("SrcEndpoint# %d", n.SrcEndpoint)
+        log.debug("DstEndpoint# %d", n.DstEndpoint)
+        log.debug("WasBroadcast# %d", n.WasBroadcast)
+        log.debug("LinkQuality# %d", n.LinkQuality)
+        log.debug("SecurityUse# %d", n.SecurityUse)
+        log.debug("TimeStamp# %d", n.TimeStamp)
+        log.debug("TransSeqNum# %d", n.TransSeqNum)
+        log.debug("Len# %d", n.Len)
         print("Data#", end = ' ')
         i = 0
         while i < n.Len:
@@ -61,12 +62,12 @@ class App:
     async def taskDataReceived(self, n):
         if n.ClusterId == 0x6 and n.SrcEndpoint == 1: # MIJIA button
             if n.Data[6] == 0:
-                self.log.info("click down")
+                log.info("click down")
             elif n.Data[6] == 1:
-                self.log.info("click released")
+                log.info("click released")
                 await self.sendMessage()
             elif n.Data[6] == 2:
-                self.log.info("double click")
+                log.info("double click")
 
     async def sendMessage(self, isLevelCtrl = False):
         if isLevelCtrl:
