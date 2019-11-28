@@ -2,6 +2,7 @@ import uasyncio as asyncio
 import ujson as json
 import core.pan_vfs
 from core.constants import *
+from core.pan_parameters import *
 
 BITMAP_NAME = "test.bmp"
 BITMAP_PATH = "app/" + BITMAP_NAME
@@ -54,7 +55,7 @@ class App:
                 }
             }''')
             layout['background']['bitmap']['name'] = BITMAP_NAME
-            return await self.pan.updateDisplay(target, layout)
+            return self.pan.putRefreshQueue(target, layout, qos = QOS1)
         except Exception as e:
             print('unable to process:', str(e))
         return False

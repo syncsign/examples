@@ -1,5 +1,6 @@
 import uasyncio as asyncio
 import ujson as json
+from core.pan_parameters import *
 
 TEMPLATE = '''
 {
@@ -29,4 +30,4 @@ class App:
         layout = json.loads(TEMPLATE)
         # Select the first online node as the target
         target = next(iter(self.pan.onlineNodes()))
-        return await self.pan.updateDisplay(target, layout)
+        return self.pan.putRefreshQueue(target, layout, qos = QOS1)

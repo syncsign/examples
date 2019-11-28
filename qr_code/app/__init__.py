@@ -1,6 +1,7 @@
 import uasyncio as asyncio
 import ujson as json
 from core.constants import *
+from core.pan_parameters import *
 
 class App:
     # User App, send a QR Code to wireless display
@@ -53,7 +54,7 @@ class App:
                 ]
             }
             '''
-            return await self.pan.updateDisplay(self.targetNodeId, json.loads(layout))
+            return self.pan.putRefreshQueue(self.targetNodeId, json.loads(layout), qos = QOS1)
         except Exception as e:
             print('unable to process:', str(e))
         return False

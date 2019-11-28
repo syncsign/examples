@@ -4,6 +4,7 @@ import arequests as requests
 import asyn
 import ujson as json
 from core.constants import *
+from core.pan_parameters import *
 
 log = logging.getLogger("APP")
 log.setLevel(logging.DEBUG)
@@ -125,7 +126,7 @@ class App:
                 if len(nodes):
                     self.targetNodeId = next(iter(nodes))
                 '''
-                return await self.pan.updateDisplay(self.targetNodeId, layout)
+                return self.pan.putRefreshQueue(self.targetNodeId, layout, qos = QOS1)
         except Exception as e:
             log.exception(e, 'unable to process layout')
         return False
