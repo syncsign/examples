@@ -41,20 +41,25 @@ class App:
     async def saveBitmapDataToNode(self, target, filePath, fileName):
         with open(filePath,'rb') as f:
             import core.image_process as img
-            bitmapData, msg = img.loadBMP(f.read())
+            bitmapData, msg, resolution = img.loadBMP(f.read())
             if (len(bitmapData)):
-                return await self.vfs.save(target, fileName, bytes(bitmapData))
+                return await self.vfs.save(target, fileName, bytes(bitmapData), resolution)
         return False
 
     async def showFullScreenBitmap(self, target):
         # Create layout render template and send to display
         try:
-            layout = json.loads('''{
-                "background": {
-                    "bitmap": { "name": "" }
-                }
-            }''')
-            layout['background']['bitmap']['name'] = BITMAP_NAME
+            layout = {
+              "items": [
+                {
+                  "type": "IMAGE",
+                  "data": {
+                    "id": "LOGO",
+                    "source" : "BUILD_IN",
+                    "name" : BITMAP_NAME,
+                    "block": { "x": 0, "y": 0, "w": 400, "h": 300 }
+                  }
+              }]}
             return self.pan.putRefreshQueue(target, layout, qos = QOS1)
         except Exception as e:
             print('unable to process:', str(e))
