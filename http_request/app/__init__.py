@@ -79,6 +79,34 @@ class App:
             await response.close()
             log.info("PATCH result: %s", resultStr)
 
+    async def getStreamRequest(self, url, headers = {}):
+        response = None
+        try:
+            log.info('fetching: %s', url)
+            response = await requests.get(url)
+            if response.status_code == 200:
+                expected = response.expect_len
+                r = 0
+                _cachedBuf = b''
+                while r < expected:
+                    if expected > 1024:
+                        _cached = await response.raw.read(1024)
+                    else:
+                        _cached = await response.raw.read(expected)
+                    if _cached:
+                        r += len(_cached)
+                        progress = r*100//response.expect_len
+                        log.info("received len=%d now=%d expecting=%d (%d%%)", len(_cached), r, expected - r, progress)
+                        _cachedBuf += _cached
+                    else:
+                        log.warning('empty read')
+            else:
+                log.error("code: %d", response.status_code)
+        except Exception as e:
+            self.log.exception(e, 'request failed')
+        if response:
+            await response.close()
+
     def base64Encode(self, _json = {}):
         import base64
         base64Str = base64.b64encode(json.dumps(_json).encode()).decode()
@@ -98,6 +126,7 @@ class App:
 
         # methods example
         await self.getRequest( "https://httpbin.org/get", headers = _header )
+        await self.getStreamRequest( "https://httpbin.org/get", headers = _header )
         await self.postRequest( "https://httpbin.org/post", json = _data)
         await self.putRequest( "https://httpbin.org/put", json = _data)
         await self.deleteRequest( "https://httpbin.org/delete", json = _data)
