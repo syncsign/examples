@@ -126,11 +126,13 @@ class App:
 
         # methods example
         await self.getRequest( "https://httpbin.org/get", headers = _header )
-        await self.getStreamRequest( "https://httpbin.org/get", headers = _header )
         await self.postRequest( "https://httpbin.org/post", json = _data)
         await self.putRequest( "https://httpbin.org/put", json = _data)
         await self.deleteRequest( "https://httpbin.org/delete", json = _data)
         await self.patchRequest( "https://httpbin.org/patch", json = _data)
+
+        # GET stream request example, suitable for downloading large amounts of data
+        await self.getStreamRequest( "https://httpbin.org/get", headers = _header )
 
         # base64 encoding example
         await self.getRequest( "https://httpbin.org//base64/{val}".format(val = self.base64Encode(_data)) )

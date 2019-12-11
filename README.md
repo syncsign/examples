@@ -15,9 +15,11 @@ Refer to this [SDK document](https://dev.sync-sign.com/hubsdk/index.html) for de
 - Draw Full Screen
 - Draw QR Code
 - Http Requests
+- Https Requests
 - MQTT Subscribe & Publish
 - ZigBee Sensors & Control
 - Simple Web Server
+- Capture button events
 
 
 # Release Notes
