@@ -103,7 +103,7 @@ class App:
             else:
                 log.error("code: %d", response.status_code)
         except Exception as e:
-            self.log.exception(e, 'request failed')
+            log.exception(e, 'request failed')
         if response:
             await response.close()
 
