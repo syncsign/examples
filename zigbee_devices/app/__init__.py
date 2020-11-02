@@ -80,11 +80,11 @@ class App:
             payload = [0x01, 0x00, 0x02]
 
         print(payload)
-        return self.pan.sendRawData(
+        return await self.pan.sendRawData(
             nodeId      = TARGET_LIGHT_NODE_ID,
             payload     = payload,
-            nwkAddr     = None, # use nodeId
             clusterId   = clusterId,
             DstEndpoint = DST_ENDPOINT,
-            SrcEndpoint = SRC_ENDPOINT
+            SrcEndpoint = SRC_ENDPOINT,
+            nwkAddr     = None, # always use nodeId (IEEE Addr) instead
         )
