@@ -3,8 +3,8 @@ import uasyncio as asyncio
 import arequests as requests
 import asyn
 import ujson as json
-from core.constants import *
-from core.pan_parameters import *
+import core.constants as c
+from core.pan_parameters import QOS1
 
 log = logging.getLogger("APP")
 log.setLevel(logging.DEBUG)
@@ -26,13 +26,12 @@ class App:
     - Generate a layout template and send to wireless display
     """
 
-    def __init__(self, mgr, loop, pan):
-        self.pan = pan
-        self.loop = loop
+    def __init__(self, mgr):
+        self.pan = mgr.pan
         self.targetNodeId = None
         self.nodeOnlineEvent = asyn.Event()
         mgr.setPanCallback(self.onPanEvent)
-        self.loop.create_task(self.loopTask()) # run a asyncio task
+        asyncio.create_task(self.loopTask()) # run a asyncio task
         log.info('App Starting')
 
     async def loopTask(self):
@@ -51,7 +50,7 @@ class App:
             await asyncio.sleep(REFRESH_INTERVAL) # sleep for a while
 
     def onPanEvent(self, event, data):
-        if event == EVT_NODE_PRESENCE:
+        if event == c.EVT_NODE_PRESENCE:
             self.onNodePresence(data['nodeId'], data['isOnline'])
 
     def onNodePresence(self, nodeId, isOnline):
@@ -126,7 +125,7 @@ class App:
                 if len(nodes):
                     self.targetNodeId = next(iter(nodes))
                 '''
-                return self.pan.putRefreshQueue(self.targetNodeId, layout, qos = QOS1)
+                return self.pan.putRefreshQueue(self.targetNodeId, layout, qos=QOS1)
         except Exception as e:
             log.exception(e, 'unable to process layout')
         return False

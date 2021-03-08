@@ -1,16 +1,16 @@
 import uasyncio as asyncio
 import ujson as json
-from core.constants import *
-from core.pan_parameters import *
+import core.constants as c
+from core.pan_parameters import QOS1
 
 class App:
     # User App, send a QR Code to wireless display
 
-    def __init__(self, mgr, loop, pan):
+    def __init__(self, mgr):
         self.targetNodeId = None
-        self.pan = pan
+        self.pan = mgr.pan
         # run a asyncio task
-        loop.create_task(self.oneShotTask())
+        asyncio.create_task(self.oneShotTask())
 
         # setup an event handler
         mgr.setPanCallback(self.onPanEvent)
@@ -24,7 +24,7 @@ class App:
 
     def onPanEvent(self, event, data):
         # Event listener, handling NODE.PRESENCE and remember the nodeId
-        if event == EVT_NODE_PRESENCE:
+        if event == c.EVT_NODE_PRESENCE:
             if data['isOnline']:
                 self.targetNodeId = data['nodeId']
                 print('node:', self.targetNodeId, 'online.')
@@ -54,7 +54,7 @@ class App:
                 ]
             }
             '''
-            return self.pan.putRefreshQueue(self.targetNodeId, json.loads(layout), qos = QOS1)
+            return self.pan.putRefreshQueue(self.targetNodeId, json.loads(layout), qos=QOS1)
         except Exception as e:
             print('unable to process:', str(e))
         return False

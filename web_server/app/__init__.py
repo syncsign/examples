@@ -2,7 +2,6 @@
 import logging
 import uasyncio as asyncio
 import ujson as json
-from core.constants import *
 import ubinascii
 import picoweb
 
@@ -99,5 +98,5 @@ def admin(req, resp):
 
 class App:
 
-    def __init__(self, mgr, loop, pan):
+    def __init__(self, mgr):
         app.run(host="0.0.0.0", port=10000)

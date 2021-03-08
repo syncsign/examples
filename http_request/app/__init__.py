@@ -9,10 +9,9 @@ log = logging.getLogger("APP")
 log.setLevel(logging.DEBUG)
 
 class App:
-    def __init__(self, mgr, loop, pan):
+    def __init__(self, mgr):
         log.info('APP init')
-        self.loop = loop
-        self.loop.create_task(self.requestTask())
+        asyncio.create_task(self.requestTask())
 
     async def getRequest(self, url, headers = {}):
         response = None

@@ -11,10 +11,9 @@ log.setLevel(logging.DEBUG)
 CERT_ROOT_CA = 'app/ca_httpbin.pem'
 
 class App:
-    def __init__(self, mgr, loop, pan):
+    def __init__(self, mgr):
         log.info('APP init')
-        self.loop = loop
-        self.loop.create_task(self.requestTask())
+        asyncio.create_task(self.requestTask())
 
     async def getRequest(self, url, headers = {}, verify = False):
         response = None

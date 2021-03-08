@@ -1,7 +1,7 @@
 from micropython import const
 import logging
 import uasyncio as asyncio
-from core.constants import *
+import core.constants as c
 
 #  buttonMask:
 #
@@ -31,14 +31,12 @@ log.setLevel(logging.DEBUG)
 class App:
     # User App of Hub SDK, trigger an http request to IFTTT when a button event occurs
 
-    def __init__(self, mgr, loop, pan):
-        self.pan = pan
-        self.loop = loop
-        mgr.setPanCallback(self.onPanEvent);
+    def __init__(self, mgr):
+        mgr.setPanCallback(self.onPanEvent)
         log.info('App Starting')
 
     def onPanEvent(self, event, data):
-        if event == EVT_NODE_BUTTONS:
+        if event == c.EVT_NODE_BUTTONS:
             self.onNodeButtonEvent(data['nodeId'], data['buttonMask'], data['status'])
 
     def onNodeButtonEvent(self, nodeId, buttonMask, status):
@@ -56,7 +54,7 @@ class App:
         elif buttonMask == BUTTON_MASK_3 and status == BUTTON_STATUS_PRESSED:
             pass
         elif buttonMask == BUTTON_MASK_4 and status == BUTTON_STATUS_PRESSED:
-            self.loop.create_task(self.triggerIfttt()) # run a asyncio task
+            asyncio.create_task(self.triggerIfttt()) # run a asyncio task
 
     async def triggerIfttt(self):
         import ujson as json

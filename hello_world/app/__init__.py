@@ -1,6 +1,6 @@
 import uasyncio as asyncio
 import ujson as json
-from core.pan_parameters import *
+from core.pan_parameters import QOS1
 
 TEMPLATE = '''
 {
@@ -18,9 +18,9 @@ TEMPLATE = '''
 class App:
     # User's App, send a 'Hello world' to wireless display
 
-    def __init__(self, mgr, loop, pan):
-        self.pan = pan
-        loop.create_task(self.printHello()) # run a asyncio coro task
+    def __init__(self, mgr):
+        self.pan = mgr.pan
+        asyncio.create_task(self.printHello()) # run a asyncio coro task
 
     async def printHello(self):
         # Wait for at least one display node becomes online

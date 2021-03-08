@@ -20,8 +20,7 @@ class MqttClient:
     DEFAULT_KEEPALIVE    = const(60)
     KEEP_ALIVE_THRESHOLD = const(5)
 
-    def __init__(self, loop, callback = None):
-        self.loop = loop
+    def __init__(self, callback=None):
         self.subscribeCallback = callback
 
         self.sn = self.UNIQUE_ID
@@ -111,13 +110,13 @@ class MqttClient:
 
     def start(self):
         self._clientInit()
-        self.loop.create_task(self.taskMqttWorker())
+        asyncio.create_task(self.taskMqttWorker())
 
 class App:
-    def __init__(self, mgr, loop, pan):
-        self.mc = MqttClient(loop, self.onMsgReceived)
+    def __init__(self, mgr):
+        self.mc = MqttClient(self.onMsgReceived)
         self.mc.start()
-        loop.create_task(self.taskPublishTest())
+        asyncio.create_task(self.taskPublishTest())
 
     # publish message every 10 seconds
     async def taskPublishTest(self):

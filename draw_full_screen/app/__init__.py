@@ -1,8 +1,8 @@
 import uasyncio as asyncio
 import ujson as json
 import core.pan_vfs
-from core.constants import *
-from core.pan_parameters import *
+import core.constants as c
+from core.pan_parameters import QOS1
 
 BITMAP_NAME = "test.bmp"
 BITMAP_PATH = "app/" + BITMAP_NAME
@@ -11,9 +11,9 @@ TARGET_NODE_ID = 0x124b001bbbf89e # REPLACE ME WITH YOUR DISPLAY NODE ID
 class App:
     # User App of Hub SDK, send a full screen image to wireless display
 
-    def __init__(self, mgr, loop, pan):
-        self.pan = pan
-        loop.create_task(self.task()) # run a asyncio task
+    def __init__(self, mgr):
+        self.pan = mgr.pan
+        asyncio.create_task(self.task()) # run a asyncio task
         self.targetNodeId = None
         mgr.setPanCallback(self.onPanEvent)
         self.vfs = core.pan_vfs.PanVFS()
@@ -33,7 +33,7 @@ class App:
 
     def onPanEvent(self, event, data):
         # Event listener, handling NODE.PRESENCE and remember the nodeId
-        if event == EVT_NODE_PRESENCE:
+        if event == c.EVT_NODE_PRESENCE:
             if data['isOnline'] and data['nodeId'] == TARGET_NODE_ID:
                 self.targetNodeId = data['nodeId']
                 print('node:', self.targetNodeId, 'online.')
@@ -60,7 +60,7 @@ class App:
                     "block": { "x": 0, "y": 0, "w": 400, "h": 300 }
                   }
               }]}
-            return self.pan.putRefreshQueue(target, layout, qos = QOS1)
+            return self.pan.putRefreshQueue(target, layout, qos=QOS1)
         except Exception as e:
             print('unable to process:', str(e))
         return False

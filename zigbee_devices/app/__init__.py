@@ -2,7 +2,6 @@
 
 import uasyncio as asyncio
 import ujson as json
-from core.constants import *
 import arequests as requests
 import logging
 from micropython import const
@@ -19,13 +18,12 @@ DST_ENDPOINT                     = const(8)
 
 class App:
     # User App of Hub SDK, send a 'Hello world' to wireless display
-    def __init__(self, mgr, loop, pan):
+    def __init__(self, mgr):
         log.info('APP init')
-        self.pan = pan
+        self.pan = mgr.pan
         mgr.setSetupPressedCallback(self.onSetupPressed)
         self.pan.setAppNodeJoinCallback(self.onNodeJoin)
         self.pan.setAppDataReceiveCallback(self.onDataReceive)
-        self.loop = loop
 
     def onSetupPressed(self):
         log.info('setup button pressed')
@@ -57,7 +55,7 @@ class App:
         while i < n.Len:
             print('0x{0:0{1}X}'.format(n.Data[i],2), end = ' ')
             i+=1
-        self.loop.create_task(self.taskDataReceived(n)) # run a asyncio task
+        asyncio.create_task(self.taskDataReceived(n)) # run a asyncio task
 
     async def taskDataReceived(self, n):
         if n.ClusterId == 0x6 and n.SrcEndpoint == 1: # MIJIA button

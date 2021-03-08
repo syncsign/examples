@@ -24,4 +24,5 @@ Refer to this [SDK document](https://dev.sync-sign.com/hubsdk/index.html) for de
 
 # Release Notes
 
-If your hub firmware is less than v0.5.0, please [upgrade your hub](https://dev.sync-sign.com/usermanual/web_portal/hub.html#check-hub-update), or use examples [v0.1.0](https://github.com/myvobot/examples/releases/tag/v0.1.0).
+- Current release must work with Hub version >= v1.7.0
+- If your hub firmware is less than v0.5.0, please [upgrade your hub](https://dev.sync-sign.com/usermanual/web_portal/hub.html#check-hub-update), or use examples [v0.1.0](https://github.com/myvobot/examples/releases/tag/v0.1.0).
